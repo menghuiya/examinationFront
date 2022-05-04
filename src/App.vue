@@ -9,19 +9,31 @@
       :visible.sync="showLogin"
       width="350px"
     >
-      <el-form :model="form" label-width="70px" v-if="loginPage">
-        <el-form-item label="用户名称">
+      <el-form
+        ref="ruleForm"
+        :rules="rules"
+        :model="form"
+        label-width="80px"
+        v-if="loginPage"
+      >
+        <el-form-item label="用户名称" prop="username">
           <el-input v-model="form.username"></el-input>
         </el-form-item>
-        <el-form-item label="用户密码">
+        <el-form-item label="用户密码" prop="password">
           <el-input v-model="form.password" show-password></el-input>
         </el-form-item>
       </el-form>
-      <el-form :model="form" label-width="70px" v-if="!loginPage">
-        <el-form-item label="用户名称">
+      <el-form
+        ref="ruleForm"
+        :rules="rules"
+        :model="form"
+        label-width="80px"
+        v-if="!loginPage"
+      >
+        <el-form-item label="用户名称" prop="username">
           <el-input v-model="form.username"></el-input>
         </el-form-item>
-        <el-form-item label="用户密码">
+        <el-form-item label="用户密码" prop="password">
           <el-input v-model="form.password" show-password></el-input>
         </el-form-item>
         <el-form-item label="用户头像">
@@ -75,6 +87,12 @@ export default {
       remember: false,
       loginPage: true,
       fileList: [],
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+      },
     };
   },
   watch: {
@@ -102,30 +120,36 @@ export default {
       this.form.avatar = "";
     },
     handleLogin() {
-      if (this.loginPage) {
-        postLogin(this.form)
-          .then((res) => {
-            console.log(res);
-            this.$message.success("登录成功！");
-            this.showLogin = false;
-            this.$store.commit("setUser", res.data);
-            this.reload();
-          })
-          .catch((err) => {
-            this.$message.error(err.msg);
-          });
-      } else {
-        postUser(this.form)
-          .then((res) => {
-            this.$message.success("注册并登录成功！");
-            this.showLogin = false;
-            this.$store.commit("setUser", res.data);
-            this.reload();
-          })
-          .catch((err) => {
-            this.$message.error(err.msg);
-          });
-      }
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          if (this.loginPage) {
+            postLogin(this.form)
+              .then((res) => {
+                console.log(res);
+                this.$message.success("登录成功！");
+                this.showLogin = false;
+                this.$store.commit("setUser", res.data);
+                this.reload();
+              })
+              .catch((err) => {
+                this.$message.error(err.msg);
+              });
+          } else {
+            postUser(this.form)
+              .then((res) => {
+                this.$message.success("注册并登录成功！");
+                this.showLogin = false;
+                this.$store.commit("setUser", res.data);
+                this.reload();
+              })
+              .catch((err) => {
+                this.$message.error(err.msg);
+              });
+          }
+        } else {
+          return false;
+        }
+      });
     },
     changeLogin() {
       if (!this.loginPage) {
