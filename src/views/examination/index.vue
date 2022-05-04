@@ -43,8 +43,20 @@
                 :key="option.id"
               >
                 <span style="margin-right: 5px">{{ option.id }}</span>
-                <div class="examination-examitem-data-item">
+                <div
+                  class="examination-examitem-data-item"
+                  v-if="option.type === 'str'"
+                >
                   {{ option.content }}
+                </div>
+                <div
+                  class="examination-examitem-data-item"
+                  v-if="option.type === 'code'"
+                  v-highlight
+                >
+                  <pre>
+                    <code v-html="option.content"></code>
+                  </pre>
                 </div>
               </el-radio>
             </el-radio-group>
@@ -55,8 +67,20 @@
                 :key="option.id"
               >
                 <span style="margin-right: 5px">{{ option.id }}</span>
-                <div class="examination-examitem-data-item">
+                <div
+                  class="examination-examitem-data-item"
+                  v-if="option.type === 'str'"
+                >
                   {{ option.content }}
+                </div>
+                <div
+                  class="examination-examitem-data-item"
+                  v-if="option.type === 'code'"
+                  v-highlight
+                >
+                  <pre>
+                    <code v-html="option.content"></code>
+                  </pre>
                 </div>
               </el-checkbox>
             </el-checkbox-group>
@@ -511,6 +535,13 @@ export default {
         word-break: break-all;
         white-space: normal;
         font-size: 16px;
+        pre {
+          position: relative;
+          top: -15px;
+        }
+        pre code.hljs {
+          // padding: 0;
+        }
       }
     }
     &-type {

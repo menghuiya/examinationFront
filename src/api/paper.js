@@ -103,3 +103,18 @@ export function deletePaper(id) {
     },
   });
 }
+
+/**
+ * 获取试卷列表
+ * @param {*} params
+ * @returns
+ */
+export function getRank(type) {
+  return request({
+    url: `/api/rank`,
+    method: "get",
+    params: {
+      type,
+    },
+  });
+}

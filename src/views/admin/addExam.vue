@@ -165,6 +165,7 @@
 
 <script>
 import { addExam, getBaseCateList } from "@/api/exam";
+import htmlUtil from "@/util/html";
 export default {
   name: "addExam",
   components: {},
@@ -211,6 +212,7 @@ export default {
       ],
       addType: "str",
       fileList: [],
+      test: true,
     };
   },
   created() {
@@ -220,10 +222,19 @@ export default {
     onSubmit() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
+          const postData = { ...this.form };
+          delete postData.options;
+          postData.options = [];
           this.form.options.forEach((item, index) => {
             item.id = String.fromCharCode(index + 65);
+            let tempItem = { ...item };
+            if (tempItem.type === "code") {
+              //进行转义
+              tempItem.content = htmlUtil.htmlEncodeByRegExp(item.content);
+            }
+            postData.options.push(tempItem);
           });
-          addExam(this.form)
+          addExam(postData)
             .then(() => {
               this.$notify({
                 title: "成功",
@@ -249,7 +260,7 @@ export default {
     addOption() {
       this.form.options.push({
         type: this.addType,
-        conten: "",
+        content: "",
       });
     },
     deleteOption(index) {

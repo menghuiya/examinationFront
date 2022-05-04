@@ -24,7 +24,7 @@ const routes = [
       {
         path: "ranking",
         name: "ranking",
-        component: () => import("../views/About.vue"),
+        component: () => import("../views/rank.vue"),
       },
       {
         path: "about",

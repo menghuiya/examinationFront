@@ -60,8 +60,20 @@
                     style="margin-right: 5px"
                     >{{ option.id }}</span
                   >
-                  <div class="examination-radios-item-content">
+                  <div
+                    class="examination-radios-item-content"
+                    v-if="option.type === 'str'"
+                  >
                     {{ option.content }}
+                  </div>
+                  <div
+                    class="examination-radios-item-content"
+                    v-if="option.type === 'code'"
+                    v-highlight
+                  >
+                    <pre>
+                      <code v-html="option.content"></code>
+                    </pre>
                   </div>
                 </div>
               </div>
@@ -89,8 +101,20 @@
                     style="margin-right: 5px"
                     >{{ option.id }}</span
                   >
-                  <div class="examination-radios-item-content">
+                  <div
+                    class="examination-radios-item-content"
+                    v-if="option.type === 'str'"
+                  >
                     {{ option.content }}
+                  </div>
+                  <div
+                    class="examination-radios-item-content"
+                    v-if="option.type === 'code'"
+                    v-highlight
+                  >
+                    <pre>
+                      <code v-html="option.content"></code>
+                    </pre>
                   </div>
                 </div>
               </div>
@@ -554,6 +578,11 @@ export default {
       }
       &-content {
         flex: 1;
+        pre {
+          width: fit-content;
+          position: relative;
+          top: -15px;
+        }
       }
     }
 
