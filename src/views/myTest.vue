@@ -33,7 +33,10 @@
         </div>
         <div class="box-card-line">
           <el-tag size="small">
-            {{ cateListMap[item.category].name }}
+            {{
+              (cateListMap[item.category] && cateListMap[item.category].name) ||
+              item.category
+            }}
           </el-tag>
           <el-tag size="small">
             {{ item.subject }}
@@ -95,18 +98,21 @@
       </el-empty>
     </div>
     <el-dialog title="新增试卷" :visible.sync="dialogFormVisible">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="试卷名称">
+      <el-form ref="ruleForm" :rules="rules" :model="form" label-width="80px">
+        <el-form-item label="试卷名称" prop="title">
           <el-input v-model="form.title"></el-input>
         </el-form-item>
-        <el-form-item label="试卷语言">
+        <el-form-item label="试卷语言" prop="category">
           <el-select v-model="form.category" placeholder="请选择试卷语言">
-            <el-option label="JavaScript" value="js"></el-option>
-            <el-option label="python" value="py"></el-option>
-            <el-option label="不限" value="all"></el-option>
+            <el-option
+              v-for="item in cateList"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属科目">
+        <el-form-item label="所属科目" prop="subject">
           <el-radio-group v-model="form.subject">
             <el-radio label="k2">科目二</el-radio>
             <el-radio label="k3">科目三</el-radio>
@@ -151,7 +157,17 @@ export default {
       form: {
         userId: "626fa48d49222b199dca7ed6",
       },
+      cateList: [],
       cateListMap: {},
+      rules: {
+        title: [{ required: true, message: "请输入试卷名称", trigger: "blur" }],
+        category: [
+          { required: true, message: "请选试卷类型", trigger: "change" },
+        ],
+        subject: [
+          { required: true, message: "请选择所属科目", trigger: "change" },
+        ],
+      },
     };
   },
   filters: {
@@ -191,7 +207,8 @@ export default {
     initCate() {
       getBaseCateList()
         .then((res) => {
-          res?.data.forEach((item) => {
+          this.cateList = res?.data || [];
+          this.cateList.forEach((item) => {
             this.cateListMap[item.value] = item;
           });
         })
@@ -217,21 +234,28 @@ export default {
         });
     },
     postAddPaper() {
-      addPaper(this.form)
-        .then(() => {
-          this.$message({
-            message: "新增成功，请尽快准备考试",
-            type: "success",
-          });
-          this.initData();
-          this.dialogFormVisible = false;
-        })
-        .catch((err) => {
-          this.$message({
-            message: err.msg || "系统错误",
-            type: "error",
-          });
-        });
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          addPaper(this.form)
+            .then(() => {
+              this.$message({
+                message: "新增成功，请尽快准备考试",
+                type: "success",
+              });
+              this.initData();
+              this.dialogFormVisible = false;
+            })
+            .catch((err) => {
+              this.$message({
+                message: err.msg || "系统错误",
+                type: "error",
+              });
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     handlExam(item) {
       if (item.status === 1) {
