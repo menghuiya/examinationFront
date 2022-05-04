@@ -584,6 +584,7 @@ export default {
       &-right {
         flex: 1;
         display: flex;
+        align-items: baseline;
         &-tag {
           display: flex;
           align-items: center;
@@ -630,6 +631,7 @@ export default {
       &-right {
         flex: 1;
         display: flex;
+        align-items: baseline;
         &-tag {
           display: flex;
           align-items: center;
