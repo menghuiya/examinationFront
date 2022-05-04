@@ -43,6 +43,11 @@
                 :key="option.id"
               >
                 <span style="margin-right: 5px">{{ option.id }}</span>
+                <img
+                  :src="option.content"
+                  alt="题目哦"
+                  v-if="option.type === 'img'"
+                />
                 <div
                   class="examination-examitem-data-item"
                   v-if="option.type === 'str'"
@@ -67,6 +72,11 @@
                 :key="option.id"
               >
                 <span style="margin-right: 5px">{{ option.id }}</span>
+                <img
+                  :src="option.content"
+                  alt="题目哦"
+                  v-if="option.type === 'img'"
+                />
                 <div
                   class="examination-examitem-data-item"
                   v-if="option.type === 'str'"
@@ -529,6 +539,10 @@ export default {
             display: flex;
           }
         }
+      }
+      img {
+        max-width: 100%;
+        max-height: 100px;
       }
       &-item {
         display: block;
