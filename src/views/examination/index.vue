@@ -157,8 +157,12 @@
           </div>
         </template>
         <template slot="extra">
-          <el-button type="primary" size="medium">返回首页</el-button>
-          <el-button type="success" size="medium">查看错题</el-button>
+          <el-button type="primary" size="medium" @click="goBack"
+            >返回首页</el-button
+          >
+          <el-button type="success" size="medium" @click="goCheck"
+            >查看错题</el-button
+          >
         </template>
       </el-result>
     </el-dialog>
@@ -233,6 +237,12 @@ export default {
   methods: {
     goBack() {
       this.$router.replace("/myTest");
+    },
+    goCheck() {
+      this.$router.push({
+        path: "/check",
+        query: this.query,
+      });
     },
     initPaper() {
       getPaperById(this.id)
