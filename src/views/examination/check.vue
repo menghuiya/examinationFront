@@ -39,6 +39,28 @@
               >未做</el-tag
             >
           </div>
+          <div class="examination-examitem-desc">
+            <img
+              :src="item.detail.desc.content"
+              alt="题目哦"
+              v-if="item.detail.desc && item.detail.desc.type === 'img'"
+            />
+            <div
+              class="examination-examitem-data-item"
+              v-if="item.detail.desc && item.detail.desc.type === 'str'"
+            >
+              {{ item.detail.desc.content }}
+            </div>
+            <div
+              class="examination-examitem-data-item"
+              v-if="item.detail.desc && item.detail.desc.type === 'code'"
+              v-highlight
+            >
+              <pre>
+                    <code v-html="item.detail.desc.content"></code>
+                  </pre>
+            </div>
+          </div>
           <div class="examination-examitem-data">
             <div class="examination-radios" v-if="index < radios">
               <div
@@ -163,9 +185,19 @@
       </div>
       <div class="examination-content-right">
         <div class="examination-user">
-          <div class="examination-user-img"></div>
+          <div class="examination-user-img">
+            <el-avatar
+              v-if="userLogin"
+              :size="80"
+              :src="userLoginData.avatar"
+              @error="false"
+            >
+            </el-avatar>
+          </div>
           <div class="examination-user-info">
-            <div class="examination-user-info-name">王乔伟</div>
+            <div class="examination-user-info-name">
+              {{ userLoginData.username }}
+            </div>
             <div class="examination-user-info-score">
               满分：<span>101</span>
             </div>
@@ -267,6 +299,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { getCheckPaperById } from "@/api/paper";
 export default {
   data() {
@@ -306,6 +339,14 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+      userLogin(state) {
+        return state.userLogin; //是否登录
+      },
+      userLoginData(state) {
+        return state.userLoginData; //登录后的数据
+      },
+    }),
     selectNum() {
       const selectNum = this.examList.filter((v) => v.answer.length).length;
       return selectNum;

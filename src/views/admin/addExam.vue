@@ -29,11 +29,22 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="题目描述">
+          <div class="addexam-select-item-header">
+            描述类型：
+            <el-radio-group v-model="form.desc.type">
+              <el-radio
+                v-for="item in addTypeMap"
+                :key="item.type"
+                :label="item.type"
+                >{{ item.name }}</el-radio
+              >
+            </el-radio-group>
+          </div>
           <el-input
             type="textarea"
-            :rows="2"
+            :rows="3"
             placeholder="请输入题目描述,如果没有可以忽略"
-            v-model="form.desc"
+            v-model="form.desc.content"
           >
           </el-input>
         </el-form-item>
@@ -198,7 +209,10 @@ export default {
         type: "single",
         category: "js",
         subject: "k2",
-        desc: "",
+        desc: {
+          type: "str",
+          content: "",
+        },
         options: [],
         answer: "",
         knowledge: "w3.huawei.com",
@@ -224,6 +238,13 @@ export default {
         if (valid) {
           const postData = { ...this.form };
           delete postData.options;
+          if (this.form.desc.type === "code") {
+            delete postData.desc;
+            postData.desc = {
+              type: "code",
+              content: htmlUtil.htmlEncodeByRegExp(this.form.desc.content),
+            };
+          }
           postData.options = [];
           this.form.options.forEach((item, index) => {
             item.id = String.fromCharCode(index + 65);
